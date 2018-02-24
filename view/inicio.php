@@ -10,5 +10,9 @@
 </head>
 <body>
     <h1>Apenas mais um teste</h1>
+    <?php
+        $teste = new \model\Teste();
+        $teste->greetz("Daniel");
+    ?>
 </body>
 </html>
