@@ -1,19 +1,17 @@
 <?php
-    
     session_start();
+    include("config-env.php");
+    use \controller as controller;
+    use \model as classes;    
     foreach(glob("controller/*.php") as $key){
         include_once($key);
     }
     foreach(glob("model/*.php") as $key){
         include($key);
     }
-
-    use \controller as controller;
-    use \model as model;
     
-    
-    $tmp = !empty($_GET['uri']) ? $_GET['uri'] : 'principal'; // Página padrão home
-    
+    $tmp = !empty($_GET['uri']) ? $_GET['uri'] : 'login'; // Página padrão home
+    $tmp = (substr($tmp,-1) === "/") ? header("Location:".substr($tmp,0,-1)) : $tmp;
     $uri = explode('/', $tmp);
     
     $vars = array(
@@ -21,21 +19,16 @@
         'action'       => (count($uri) > 0 ? array_shift($uri) : 'index'),
         'params'       => array()
     );
-    
-    $key = NULL;
-    if (count($uri) > 1){
-        foreach ($uri as $val) {
-            if (is_null($key))
-                $key = $val;
-            else {
-                $vars['params'][$key] = $val;
-                $key = NULL;
-            }
-        }
+    foreach($uri as $val){
+        $vars['params'][] = $val;
     }
+
     $rota = 'controller\\'.ucfirst($vars['controller']).'::'.$vars['action'];
     
     if(method_exists('controller\\'.ucfirst($vars['controller']),$vars['action'])){
+        $_GET['params'] = $vars['params']; 
         call_user_func($rota); 
-    }
+    }   
+
+    
 ?>

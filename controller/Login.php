@@ -2,9 +2,9 @@
 
 namespace controller;
 
-class Principal{
+class Pessoa{
     public function index(){
-        require("view/inicio.php");
-        
+        header("Location:pesquisar");
     }
+   
 }
