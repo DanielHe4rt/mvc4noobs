@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-class People extends Model {
-
+class People extends Model
+{
     public $table = "peoples";
 
     public $fillables = [
@@ -11,5 +11,4 @@ class People extends Model {
     ];
 
     protected $hidden = ['password'];
-
 }
