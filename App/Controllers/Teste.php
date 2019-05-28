@@ -7,9 +7,11 @@ use App\Models\People ;
 class Teste {
 
     public function index(){
-        $teste = new People();
+        $people = new People();
 
-        $teste->create(['name' => '','password' => 'teste', 'age' => 2]);
+        $data = $people->find(23);
+        var_dump($data->data);
+        $data->update(['name' => 'danielhe4rt','dsa' => 1]);
     }
 
 

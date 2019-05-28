@@ -8,25 +8,22 @@ class Application{
     public function __construct(){
         session_start();
         require_once('vendor/autoload.php');
-
+        
         $this->uri = $_SERVER['REQUEST_URI'];
-
+    
         $dotenv = Dotenv\Dotenv::create(__DIR__);
         $dotenv->load();
         
         foreach(glob(__DIR__ . "/App/Models/*.php") as $key){
             include($key);
         }
+
         foreach(glob(__DIR__ . "/App/Controllers/*.php") as $key){
             include_once($key);
         }
-
-        
     }
 
     public function router(){
-
-        // echo "URI:" . $this->uri . "<br>";
 
         $tmp = !empty($this->uri) ? $this->uri : 'Teste'; // Página padrão home
         

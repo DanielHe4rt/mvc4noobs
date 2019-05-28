@@ -7,9 +7,7 @@ class People extends Model {
     public $table = "peoples";
 
     public $fillables = [
-        ['name' => 'name','required' => true],
-        ['name' => 'age','required' => true],
-        ['name' => 'password','required' => false]
+        'name','age'
     ];
 
     protected $hidden = ['password'];
