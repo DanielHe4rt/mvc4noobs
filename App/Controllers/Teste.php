@@ -2,17 +2,14 @@
 
 namespace App\Controllers;
 
-use App\Models\People ;
+use App\Controllers\Controller;
+use App\Models\People;
 
-class Teste {
+class Teste extends Controller{
 
     public function index(){
         $people = new People();
-
-        $data = $people->find(23);
-        var_dump($data->data);
-        $data->update(['name' => 'danielhe4rt','dsa' => 1]);
+        $data = $people->create(['name' => 'danielhe4rt123123', 'age' => 213, 'password' => 'qualquermerda']);
+        parent::response($data->data);
     }
-
-
 }

@@ -22,9 +22,8 @@ class Model {
             $this->connection = new \PDO("mysql:host=".getenv('DB_HOST').";dbname=".getenv('DB_NAME'),getenv('DB_USER'),getenv('DB_PASSWORD'));
             $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }catch(\PDOException $e){
-            echo $e->getMessage();
+            return $this->response(['error' => $e->getMessage()]);
         }
-        
     }
 
     public function find(int $id){
@@ -94,7 +93,7 @@ class Model {
             return $this;
             
         }catch(\PDOException $e){
-            die($e->getMessage());
+            return $this->response(['error' => $e->getMessage()]);
         }
         
     }
@@ -113,11 +112,9 @@ class Model {
         foreach($data as $key => $value){
             $pdo_data .= $key . " = :" . $key . ", "; 
         }
-        
-        
+
         $pdo_data = substr($pdo_data,0,-2);
 
-        
         try{
             $query = "UPDATE " . $this->table . " SET " . $pdo_data . " WHERE id = :id";
             
@@ -134,7 +131,7 @@ class Model {
             return $this;
             
         }catch(\PDOException $e){
-            die($e->getMessage());
+            return $this->response(['error' => $e->getMessage()]);
         }
     }
 
@@ -148,9 +145,15 @@ class Model {
             return $result->execute();
             
         }catch(\PDOException $e){
-            die($e->getMessage());
+            return $this->response(['error' => $e->getMessage()]);
         }
 
+    }
+
+    public function response(array $data, int $httpCode = 200){
+        header("HTTP/1.0 ". $httpCode);
+        header('Content-type: application/json');
+        die(json_encode($data));
     }
 
 }
