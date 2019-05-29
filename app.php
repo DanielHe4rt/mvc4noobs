@@ -1,17 +1,26 @@
 <?php
 
+use App\Router\Router as Router;
 
 class Application
 {
+
     public $uri;
+    public $method;
+    public $router;
+
 
     public function __construct()
     {
         session_start();
         require_once('vendor/autoload.php');
-        
+        require_once('App/Router/Router.php');
+
+        $this->router = new Router();
+
         $this->uri = $_SERVER['REQUEST_URI'];
-    
+        $this->method = $_SERVER['REQUEST_METHOD'];
+
         $dotenv = Dotenv\Dotenv::create(__DIR__);
         $dotenv->load();
         
@@ -26,28 +35,30 @@ class Application
 
     public function router()
     {
-        $tmp = !empty($this->uri) ? $this->uri : 'Teste'; // Página padrão home
-        
-        $tmp = substr($tmp, 1);
-        $tmp = (substr($tmp, -1) === "/") ? header("Location:".substr($tmp, 0, -1)) : $tmp;
-        
-        $uri = explode('/', $tmp);
+        if(isset($this->router->routes[$this->uri])){
 
-        $vars = array(
-            'controller'   => (count($uri) > 0 ? array_shift($uri) : 'Teste'),
-            'action'       => (count($uri) > 0 ? array_shift($uri) : 'index'),
-            'params'       => array()
-        );
-        foreach ($uri as $val) {
-            $vars['params'][] = $val;
-        }
-        
-        $route = 'App\\Controllers\\'.ucfirst($vars['controller']).'::'.$vars['action'];
-        
-        if (method_exists('\\App\\Controllers\\'.ucfirst($vars['controller']), $vars['action'])) {
-            call_user_func($route);
+            $route = $this->router->routes[$this->uri];
+
+            $uri = explode('::', $route['action']);
+            $vars = array(
+                'controller'   => (count($uri) > 0 ? array_shift($uri) : 'index'),
+                'action'       => (count($uri) > 0 ? array_shift($uri) : 'index'),
+                'params'       => array()
+            );
+
+            print_r($vars);
+
+            $route = 'App\\Controllers\\'.ucfirst($vars['controller']).'::'.$vars['action'];
+
+            if (method_exists('\\App\\Controllers\\'.ucfirst($vars['controller']), $vars['action'])) {
+                call_user_func($route);
+            } else {
+                require_once('App\\Views\\methodNotFound.php');
+                die();
+            }
+
         } else {
-            require_once('App\\Views\\404.php');
+            require_once('App\\Views\\routeNotFound.php');
             die();
         }
     }

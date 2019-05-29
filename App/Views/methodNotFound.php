@@ -1,0 +1,1 @@
+N tem mano

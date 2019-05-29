@@ -7,7 +7,7 @@ class People extends Model
     public $table = "peoples";
 
     public $fillables = [
-        'name','age'
+        'name', 'age'
     ];
 
     protected $hidden = ['password'];
