@@ -7,10 +7,8 @@ use App\Models\People;
 
 class Teste extends Controller
 {
-    public function index()
+    public static function index()
     {
-        $people = new People();
-        $data = $people->create(['name' => 'danielhe4rt123123', 'age' => 213, 'password' => 'qualquermerda']);
-        parent::response($data->data);
+        print('daniel eh gay');
     }
 }

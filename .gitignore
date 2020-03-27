@@ -1,2 +1,7 @@
 /vendor
 /.php_cs.cache
+*.xml
+
+*.iml
+
+\.idea/
