@@ -23,7 +23,7 @@ class Application
 
         $dotenv = Dotenv\Dotenv::create(__DIR__);
         $dotenv->load();
-        
+
         foreach (glob(__DIR__ . "/App/Models/*.php") as $key) {
             include($key);
         }
@@ -35,23 +35,26 @@ class Application
 
     public function router()
     {
-        if(isset($this->router->routes[$this->uri])){
+        if (isset($this->router->routes[$this->uri])) {
 
-            $route = $this->router->routes[$this->uri];
+            $routeData = $this->router->routes[$this->uri];
 
-            $uri = explode('::', $route['action']);
+            $uri = explode('::', $routeData['action']);
             $vars = array(
-                'controller'   => (count($uri) > 0 ? array_shift($uri) : 'index'),
-                'action'       => (count($uri) > 0 ? array_shift($uri) : 'index'),
-                'params'       => array()
+                'controller' => (count($uri) > 0 ? array_shift($uri) : 'index'),
+                'action' => (count($uri) > 0 ? array_shift($uri) : 'index'),
+                'params' => array()
             );
 
-            print_r($vars);
+            $route = 'App\\Controllers\\' . ucfirst($vars['controller']) . '::' . $vars['action'];
 
-            $route = 'App\\Controllers\\'.ucfirst($vars['controller']).'::'.$vars['action'];
+            if (method_exists('\\App\\Controllers\\' . ucfirst($vars['controller']), $vars['action'])) {
+                $response = call_user_func($route);
+                if ($routeData['rest']) {
+                    $this->router->response($response);
+                }
+                echo $response;
 
-            if (method_exists('\\App\\Controllers\\'.ucfirst($vars['controller']), $vars['action'])) {
-                call_user_func($route);
             } else {
                 require_once('App\\Views\\methodNotFound.php');
                 die();

@@ -11,10 +11,19 @@ namespace App\Router;
 class Router
 {
     public $routes = [
-        '/teste' => [
+        '/' => [
             'method' => 'GET',
-            'action' => 'Teste::index'
+            'action' => 'PeopleController::index',
+            'rest' => true
         ]
     ];
+
+    public function response(array $data, $httpCode = 200)
+    {
+        header("HTTP/1.0 ". $httpCode);
+        header('Content-type: application/json');
+        echo json_encode($data);
+        die;
+    }
 
 }
